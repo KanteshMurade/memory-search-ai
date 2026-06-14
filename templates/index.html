@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Memory Search AI</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:#121212;
+            color:white;
+            font-family:Arial, sans-serif;
+            padding:30px;
+        }
+
+        h1{
+            text-align:center;
+            color:#4CAF50;
+            margin-bottom:30px;
+        }
+
+        .search-container{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .search-box{
+            width:60%;
+            max-width:600px;
+            padding:15px;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+        }
+
+        .search-btn{
+            padding:15px 25px;
+            border:none;
+            border-radius:10px;
+            background:#4CAF50;
+            color:white;
+            cursor:pointer;
+            font-size:18px;
+        }
+
+        .search-btn:hover{
+            background:#45a049;
+        }
+
+        .gallery{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:20px;
+        }
+
+        .card{
+            background:#1e1e1e;
+            width:330px;
+            border-radius:15px;
+            overflow:hidden;
+            box-shadow:0 0 10px rgba(0,0,0,0.5);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:scale(1.03);
+        }
+
+        .card img{
+            width:100%;
+            height:250px;
+            object-fit:cover;
+        }
+
+        .content{
+            padding:15px;
+        }
+
+        .photo-name{
+            color:#4CAF50;
+            margin-bottom:10px;
+        }
+
+        .section{
+            margin-top:10px;
+            color:#ddd;
+        }
+
+        .empty{
+            text-align:center;
+            color:#999;
+            margin-top:40px;
+            font-size:18px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>📸 Memory Search AI</h1>
+
+    <div class="search-container">
+
+        <form action="/search" method="get">
+
+            <input
+                type="text"
+                name="query"
+                class="search-box"
+                placeholder="Search photos..."
+                value="{{ query if query else '' }}"
+            >
+
+            <button
+                type="submit"
+                class="search-btn"
+            >
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if results %}
+
+    <div class="gallery">
+
+        {% for item in results %}
+
+        <div class="card">
+
+            <img
+                src="/photos/{{ item.photo }}"
+                alt="{{ item.photo }}"
+            >
+
+            <div class="content">
+
+                <h3 class="photo-name">
+                    {{ item.photo }}
+                </h3>
+
+                <div class="section">
+                    <b>Caption:</b><br>
+                    {{ item.caption }}
+                </div>
+
+                <div class="section">
+                    <b>Objects:</b><br>
+                    {{ item.objects }}
+                </div>
+
+                <div class="section">
+                    <b>People:</b><br>
+                    {{ item.people }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+
+        Try searching:
+
+        <br><br>
+
+        person<br>
+        chair<br>
+        plant<br>
+        tie<br>
+        vase<br>
+        toilet
+
+    </div>
+
+    {% endif %}
+
+</body>
+</html>
