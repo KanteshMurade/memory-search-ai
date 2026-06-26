@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.filename }} - Memory Search AI</title>
+    <link rel="stylesheet" href="/static/css/app.css?v=2">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="/">Memory Search AI</a>
+        <div class="nav-actions">
+            <a class="nav-link" href="/people">People</a>
+        </div>
+    </nav>
+
+    <main class="detail-shell">
+        <section class="photo-stage">
+            <img src="/photos/{{ item.filename }}" alt="{{ item.caption or item.filename }}">
+        </section>
+        <aside class="detail-panel">
+            <a class="back-link" href="/">Back</a>
+            <h1>{{ item.filename }}</h1>
+            <dl>
+                <div>
+                    <dt>Caption</dt>
+                    <dd>{{ item.caption or "Not indexed yet" }}</dd>
+                </div>
+                <div>
+                    <dt>Objects</dt>
+                    <dd>{{ item.objects|join(', ') if item.objects else "None detected" }}</dd>
+                </div>
+                <div>
+                    <dt>People</dt>
+                    <dd>{{ item.people|join(', ') if item.people else "No known people detected" }}</dd>
+                </div>
+                <div>
+                    <dt>Date</dt>
+                    <dd>{{ item.date or "Unknown" }}</dd>
+                </div>
+                <div>
+                    <dt>Location</dt>
+                    <dd>{{ item.location or "Unknown" }}</dd>
+                </div>
+                <div>
+                    <dt>Embedding Score</dt>
+                    <dd>{{ '%.3f'|format(item.score) if item.score is not none else "Open from search to see score" }}</dd>
+                </div>
+            </dl>
+        </aside>
+    </main>
+</body>
+</html>

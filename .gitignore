@@ -12,3 +12,9 @@ photo_vectors.json
 *.db
 
 .env
+data/
+models/
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/

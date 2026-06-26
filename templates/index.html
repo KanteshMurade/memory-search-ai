@@ -1,197 +1,185 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Search AI</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-        body{
-            background:#121212;
-            color:white;
-            font-family:Arial, sans-serif;
-            padding:30px;
-        }
-
-        h1{
-            text-align:center;
-            color:#4CAF50;
-            margin-bottom:30px;
-        }
-
-        .search-container{
-            text-align:center;
-            margin-bottom:30px;
-        }
-
-        .search-box{
-            width:60%;
-            max-width:600px;
-            padding:15px;
-            border:none;
-            border-radius:10px;
-            font-size:18px;
-        }
-
-        .search-btn{
-            padding:15px 25px;
-            border:none;
-            border-radius:10px;
-            background:#4CAF50;
-            color:white;
-            cursor:pointer;
-            font-size:18px;
-        }
-
-        .search-btn:hover{
-            background:#45a049;
-        }
-
-        .gallery{
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            gap:20px;
-        }
-
-        .card{
-            background:#1e1e1e;
-            width:330px;
-            border-radius:15px;
-            overflow:hidden;
-            box-shadow:0 0 10px rgba(0,0,0,0.5);
-            transition:0.3s;
-        }
-
-        .card:hover{
-            transform:scale(1.03);
-        }
-
-        .card img{
-            width:100%;
-            height:250px;
-            object-fit:cover;
-        }
-
-        .content{
-            padding:15px;
-        }
-
-        .photo-name{
-            color:#4CAF50;
-            margin-bottom:10px;
-        }
-
-        .section{
-            margin-top:10px;
-            color:#ddd;
-        }
-
-        .empty{
-            text-align:center;
-            color:#999;
-            margin-top:40px;
-            font-size:18px;
-        }
-
-    </style>
-
+    <link rel="stylesheet" href="/static/css/app.css?v=2">
+    <script src="/static/js/app.js?v=2" defer></script>
 </head>
-
 <body>
+    <nav class="topbar">
+        <a class="brand" href="/">Memory Search AI</a>
+        <div class="nav-actions">
+            <!-- <form action="/index" method="post">
+                <button class="icon-button" type="submit" title="Index photos" aria-label="Index photos">R</button>
+            </form> -->
+            <a class="nav-link" href="/people">People</a>
+        </div>
+    </nav>
 
-    <h1>📸 Memory Search AI</h1>
-
-    <div class="search-container">
-
-        <form action="/search" method="get">
-
-            <input
-                type="text"
-                name="query"
-                class="search-box"
-                placeholder="Search photos..."
-                value="{{ query if query else '' }}"
-            >
-
-            <button
-                type="submit"
-                class="search-btn"
-            >
-                Search
-            </button>
-
-        </form>
-
-    </div>
-
-    {% if results %}
-
-    <div class="gallery">
-
-        {% for item in results %}
-
-        <div class="card">
-
-            <img
-                src="/photos/{{ item.photo }}"
-                alt="{{ item.photo }}"
-            >
-
-            <div class="content">
-
-                <h3 class="photo-name">
-                    {{ item.photo }}
-                </h3>
-
-                <div class="section">
-                    <b>Caption:</b><br>
-                    {{ item.caption }}
-                </div>
-
-                <div class="section">
-                    <b>Objects:</b><br>
-                    {{ item.objects }}
-                </div>
-
-                <div class="section">
-                    <b>People:</b><br>
-                    {{ item.people }}
-                </div>
-
+    <main class="shell">
+        <section class="search-panel">
+            <form class="search-form" id="gallery-search" action="/search" method="get" data-loading-form>
+                <input
+                    type="search"
+                    name="query"
+                    placeholder="Search like you remember it: me near a white car, sunset beach, college friends..."
+                    value="{{ query if query else '' }}"
+                    autofocus
+                >
+                <input type="hidden" name="date" value="{{ filters.date if filters.date else '' }}">
+                <input type="hidden" name="location" value="{{ filters.location if filters.location else '' }}">
+                <input type="hidden" name="person" value="{{ filters.person if filters.person else '' }}">
+                <input type="hidden" name="object_name" value="{{ filters.object_name if filters.object_name else '' }}">
+                <button type="submit">Search</button>
+            </form>
+            <div class="suggestions" aria-label="Search suggestions">
+                <a href="/search?query=me+with+friends">me with friends</a>
+                <a href="/search?query=sunset">sunset</a>
+                <a href="/search?query=near+building">near building</a>
+                <a href="/search?query=wearing+black+shirt">wearing black shirt</a>
             </div>
+        </section>
 
+        <section class="upload-band">
+
+    <!-- Upload Photo Form -->
+    <form
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        data-loading-form
+        class="upload-form"
+    >
+
+        <input
+            id="photo-upload"
+            type="file"
+            name="file"
+            accept="image/*"
+            required
+        >
+
+        <label for="photo-upload" class="upload-label">
+            Choose Photo
+        </label>
+
+        <button
+            type="submit"
+            class="primary-btn"
+        >
+            Upload & Index
+        </button>
+
+    </form>
+
+
+    <!-- Reindex Existing Gallery -->
+    <form
+        action="/index"
+        method="post"
+        data-loading-form
+        class="reindex-form"
+    >
+
+        <button
+            type="submit"
+            class="secondary-btn"
+        >
+            Reindex Gallery
+        </button>
+
+    </form>
+
+
+    <!-- Gallery Statistics -->
+    <p class="gallery-count">
+        {{ indexed_count }} indexed photos
+    </p>
+
+</section>
+
+        <div class="loader" data-loader hidden>
+            <span></span>
+            <p>Processing...</p>
         </div>
 
-        {% endfor %}
+        <section class="gallery-layout">
+            <aside class="filter-sidebar" aria-label="Search filters">
+                <form action="/search" method="get">
+                    <input type="hidden" name="query" value="{{ query if query else '' }}">
+                    <div class="filter-heading">
+                        <h2>Filters</h2>
+                        <a href="/">Clear</a>
+                    </div>
 
-    </div>
+                    <label class="filter-field" for="filter-date">
+                        <span>Date</span>
+                        <select id="filter-date" name="date">
+                            <option value="">Any date</option>
+                            {% for option in filter_options.dates %}
+                                <option value="{{ option }}" {% if filters.date == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-    {% else %}
+                    <label class="filter-field" for="filter-location">
+                        <span>Location</span>
+                        <select id="filter-location" name="location">
+                            <option value="">Any location</option>
+                            {% for option in filter_options.locations %}
+                                <option value="{{ option }}" {% if filters.location == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-    <div class="empty">
+                    <label class="filter-field" for="filter-person">
+                        <span>Person</span>
+                        <select id="filter-person" name="person">
+                            <option value="">Anyone</option>
+                            {% for option in filter_options.people %}
+                                <option value="{{ option }}" {% if filters.person == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-        Try searching:
+                    <label class="filter-field" for="filter-object">
+                        <span>Object</span>
+                        <select id="filter-object" name="object_name">
+                            <option value="">Any object</option>
+                            {% for option in filter_options.objects %}
+                                <option value="{{ option }}" {% if filters.object_name == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-        <br><br>
+                    <button type="submit">Apply Filters</button>
+                </form>
+            </aside>
 
-        person<br>
-        chair<br>
-        plant<br>
-        tie<br>
-        vase<br>
-        toilet
-
-    </div>
-
-    {% endif %}
-
+            {% if results %}
+                <section class="gallery">
+                    {% for item in results %}
+                        <a class="photo-card" href="/photo/{{ item.id }}{% if item.score is not none %}?score={{ '%.4f'|format(item.score) }}{% endif %}">
+                            <img src="/photos/{{ item.filename }}" alt="{{ item.caption or item.filename }}" loading="lazy">
+                            <div class="photo-meta">
+                                <h2>{{ item.caption or item.filename }}</h2>
+                                <p>{{ item.people|join(', ') if item.people else item.objects|join(', ') }}</p>
+                                {% if item.score is not none %}
+                                    <span>{{ '%.0f'|format(item.score * 100) }}% match</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </section>
+            {% else %}
+                <section class="empty-state">
+                    <h1>No photos found</h1>
+                    <p>Add photos to the gallery or try a more natural memory search.</p>
+                </section>
+            {% endif %}
+        </section>
+    </main>
 </body>
 </html>

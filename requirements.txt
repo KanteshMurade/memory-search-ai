@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+sqlalchemy
+numpy
+pillow
+transformers
+torch
+ultralytics
+face-recognition
+sentence-transformers

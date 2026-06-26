@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People - Memory Search AI</title>
+    <link rel="stylesheet" href="/static/css/app.css?v=2">
+    <script src="/static/js/app.js?v=2" defer></script>
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="/">Memory Search AI</a>
+        <div class="nav-actions">
+            <a class="nav-link" href="/">Gallery</a>
+        </div>
+    </nav>
+
+    <main class="people-shell">
+        <section class="person-creator">
+            <h1>Known People</h1>
+            <form action="/people" method="post">
+                <input type="text" name="name" placeholder="Add person name" required>
+                <button type="submit">Add Person</button>
+            </form>
+        </section>
+
+        <section class="people-grid">
+            {% for person in people %}
+                <article class="person-card">
+                    <div>
+                        <h2>{{ person.name }}</h2>
+                        <p>{{ person.faces|length }} face samples</p>
+                    </div>
+                    <form action="/people/{{ person.id }}/faces" method="post" enctype="multipart/form-data" data-loading-form>
+                        <input id="face-{{ person.id }}" type="file" name="file" accept="image/*" required>
+                        <label for="face-{{ person.id }}">Upload Face</label>
+                        <button type="submit">Train</button>
+                    </form>
+                </article>
+            {% else %}
+                <div class="empty-state">
+                    <h1>No people yet</h1>
+                    <p>Add a person, then upload a clear face photo to recognize them automatically.</p>
+                </div>
+            {% endfor %}
+        </section>
+
+        <div class="loader" data-loader hidden>
+            <span></span>
+            <p>Learning faces...</p>
+        </div>
+    </main>
+</body>
+</html>
